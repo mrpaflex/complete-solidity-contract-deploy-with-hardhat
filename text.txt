@@ -1,0 +1,90 @@
+line 32 
+go to pancakeswap to liquidity copy or import the link
+
+0xa0262bE5A3097844827dD7248C5839d079863C24
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract TaxableToken is ERC20, Ownable {
+    uint256 public buyTaxRate = 3; // 3% buy tax
+    uint256 public sellTaxRate = 2; // 2% sell tax
+
+    constructor(string memory name, string memory symbol) ERC20(name, symbol) {
+        _mint(msg.sender, 1000000 * (10**18)); // Initial supply, adjust as needed
+    }
+
+    function _transfer(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) internal override {
+        uint256 taxAmount = 0;
+
+        // Check if it's a buy or sell transaction
+        if (sender == owner() || sender == address(0)) {
+            // Buy transaction (mint tokens)
+            taxAmount = (amount * buyTaxRate) / 100;
+            _mint(address(this), taxAmount);
+        } else {
+            // Sell transaction (burn tokens)
+            taxAmount = (amount * sellTaxRate) / 100;
+            _burn(sender, taxAmount);
+        }
+
+        // Calculate the net amount after tax
+        uint256 netAmount = amount - taxAmount;
+
+        // Transfer the net amount
+        super._transfer(sender, recipient, netAmount);
+    }
+
+    // Owner can change tax rates
+    function setTaxRates(uint256 newBuyTaxRate, uint256 newSellTaxRate) external onlyOwner {
+        require(newBuyTaxRate <= 10, "Buy tax rate must be 10% or lower");
+        require(newSellTaxRate <= 10, "Sell tax rate must be 10% or lower");
+        buyTaxRate = newBuyTaxRate;
+        sellTaxRate = newSellTaxRate;
+    }
+}
+
+//////////////////////////
+ // function _transfer( address sender, address recipient, uint256 amount) internal override {
+    //     uint256 taxAmount = 0;
+
+    //     // Check if it's a buy or sell transaction
+    //     if (sender == owner() || sender == address(0)) {
+    //         // Buy transaction (mint tokens)
+    //         taxAmount = (amount * buyTaxRate) / 100;
+    //         _mint(address(this), taxAmount);
+
+    //         _transfer(address(this), taxWallet, taxAmount);
+    //     } else {
+    //         // Sell transaction (burn tokens)
+    //         taxAmount = (amount * sellTaxRate) / 100;
+    //         _burn(sender, taxAmount);
+
+    //         _transfer(sender, taxWallet, taxAmount);
+    //     }
+
+    //     // Calculate the net amount after tax
+    //     uint256 netAmount = amount - taxAmount;
+
+    //     // Transfer the net amount
+    //     super._transfer(sender, recipient, netAmount);
+    // }
+
+    0x22a954E54A91B12eecc1d1412048cc7003B22124
+
+    ///
+    old one i used
+    0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73
+    pcs v2
+    0x4832F66Fce8b8f398a4d1D6E774CAd44cba7728b
+
+
+ca
+0x395f24d816fC3c37169C481ccAeCEcD1DeD10F88
